@@ -119,7 +119,6 @@
       transform: rotateY(180deg) rotateX(10deg) translateY(-8px);
     }
 
-    /* Animación base de flotación + rotación ligera */
     @keyframes floatCard {
       0% {
         transform: rotateY(-18deg) rotateX(14deg) translateY(0);
@@ -138,7 +137,6 @@
       }
     }
 
-    /* Etiquetas inferiores */
     .card-label {
       margin-top: 0.6rem;
       text-align: center;
@@ -153,7 +151,6 @@
       font-weight: 600;
     }
 
-    /* Indicaciones */
     .hint {
       font-size: 0.8rem;
       color: #9ca6d4;
@@ -161,7 +158,6 @@
       margin-top: -0.8rem;
     }
 
-    /* Botones de acción */
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -200,7 +196,6 @@
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
     }
 
-    /* Modo responsive */
     @media (max-width: 480px) {
       :root {
         --card-width: 320px;
@@ -212,6 +207,45 @@
       .subtitle {
         padding-inline: 1.2rem;
       }
+    }
+
+    /* LIGHTBOX / MODAL */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .lightbox.show {
+      display: flex;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      border-radius: 18px;
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .lightbox-content img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
     }
   </style>
 </head>
@@ -228,11 +262,9 @@
     <div class="card-wrapper" data-owner="yamil">
       <div class="card-3d">
         <div class="card-face front">
-          <!-- Imagen anverso Yamil -->
           <img src="xliZY.jpg" alt="Tarjeta frontal Yamil F. Rivera" />
         </div>
         <div class="card-face back">
-          <!-- Imagen reverso Yamil -->
           <img src="6n8DF.jpg" alt="Tarjeta reverso general Colboltic" />
         </div>
       </div>
@@ -245,12 +277,10 @@
     <div class="card-wrapper" data-owner="dana">
       <div class="card-3d">
         <div class="card-face front">
-          <!-- Imagen anverso Dana -->
-          <img src="dana avila.jpeg" alt="Tarjeta frontal Dana M. Ávila" />
+          <img src="dana-avila.jpg" alt="Tarjeta frontal Dana M. Ávila" />
         </div>
         <div class="card-face back">
-          <!-- Puedes reutilizar el mismo reverso o poner otro archivo -->
-          <img src="6n8DF-3.jpg" alt="Tarjeta reverso general Colboltic" />
+          <img src="6n8DF.jpg" alt="Tarjeta reverso general Colboltic" />
         </div>
       </div>
       <p class="card-label">
@@ -268,22 +298,42 @@
     </button>
   </div>
 
+  <!-- MODAL / LIGHTBOX -->
+  <div id="lightbox" class="lightbox">
+    <div class="lightbox-backdrop"></div>
+    <div class="lightbox-content">
+      <img id="lightbox-img" src="" alt="Tarjeta ampliada" />
+    </div>
+  </div>
+
   <script>
-    // Obtener todas las tarjetas
     const cardWrappers = document.querySelectorAll(".card-wrapper");
     const toggleBtn = document.getElementById("toggle-rotation");
     const resetBtn = document.getElementById("reset-cards");
     let rotationPaused = false;
 
+    // Lightbox
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const backdrop = document.querySelector(".lightbox-backdrop");
+
     cardWrappers.forEach((wrapper) => {
       const card = wrapper.querySelector(".card-3d");
 
-      // Click / toque para voltear
+      // Click simple: girar tarjeta
       wrapper.addEventListener("click", () => {
         card.classList.toggle("flipped");
       });
 
-      // Efecto "tilt" suave según el mouse
+      // Doble clic: mostrar imagen frontal ampliada
+      wrapper.addEventListener("dblclick", (e) => {
+        e.stopPropagation();
+        const frontImg = wrapper.querySelector(".card-face.front img");
+        lightboxImg.src = frontImg.src;
+        lightbox.classList.add("show");
+      });
+
+      // Tilt suave con el mouse
       wrapper.addEventListener("mousemove", (e) => {
         const rect = wrapper.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -322,6 +372,20 @@
         card.style.animationPlayState = "running";
         card.style.transform = "";
       });
+    });
+
+    // Cerrar lightbox al hacer click en el fondo
+    backdrop.addEventListener("click", () => {
+      lightbox.classList.remove("show");
+      lightboxImg.src = "";
+    });
+
+    // Cerrar con tecla ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        lightbox.classList.remove("show");
+        lightboxImg.src = "";
+      }
     });
   </script>
 </body>

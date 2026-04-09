@@ -254,8 +254,7 @@
     <div class="card-wrapper" data-owner="dana">
       <div class="card-3d">
         <div class="card-face front">
-          <!-- OJO: aquí usamos EXACTO el nombre del archivo -->
-          <img src="dana avila.jpg" alt="Tarjeta frontal Dana M. Ávila" />
+          <img src="dana-avila.jpg" alt="Tarjeta frontal Dana M. Ávila" />
         </div>
         <div class="card-face back">
           <img src="6n8DF.jpg" alt="Tarjeta reverso general Colboltic" />
@@ -297,12 +296,10 @@
     cardWrappers.forEach((wrapper) => {
       const card = wrapper.querySelector(".card-3d");
 
-      // Click simple: girar tarjeta
       wrapper.addEventListener("click", () => {
         card.classList.toggle("flipped");
       });
 
-      // Doble clic: mostrar imagen frontal ampliada
       wrapper.addEventListener("dblclick", (e) => {
         e.stopPropagation();
         const frontImg = wrapper.querySelector(".card-face.front img");
@@ -310,7 +307,6 @@
         lightbox.classList.add("show");
       });
 
-      // Tilt suave con el mouse
       wrapper.addEventListener("mousemove", (e) => {
         const rect = wrapper.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -333,7 +329,6 @@
       });
     });
 
-    // Botón para pausar / reanudar animación base
     toggleBtn.addEventListener("click", () => {
       rotationPaused = !rotationPaused;
       document.querySelectorAll(".card-3d").forEach((card) => {
@@ -341,7 +336,6 @@
       });
     });
 
-    // Resetear a estado inicial
     resetBtn.addEventListener("click", () => {
       rotationPaused = false;
       document.querySelectorAll(".card-3d").forEach((card) => {
@@ -351,13 +345,11 @@
       });
     });
 
-    // Cerrar lightbox al hacer click en el fondo
     backdrop.addEventListener("click", () => {
       lightbox.classList.remove("show");
       lightboxImg.src = "";
     });
 
-    // Cerrar con tecla ESC
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         lightbox.classList.remove("show");

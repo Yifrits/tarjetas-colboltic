@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tarjetas Digitales - Colboltic SRL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --card-width: 420px;
+      --card-height: 250px;
+      --bg: #0a0c10;
+      --accent: #e30613;
+      --secondary: #0056b8;
+      --radius: 16px;
+      --shadow-strong: 0 30px 80px rgba(0, 0, 0, 0.65);
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.4);
+      --text-light: #f9fbff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      background: radial-gradient(circle at top, #182445 0, #050608 55%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5ecff;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #c3c8e6;
+      text-align: center;
+      max-width: 640px;
+      line-height: 1.5;
+    }
+
+    .cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2.2rem;
+      padding: 1.5rem;
+      width: 100%;
+    }
+
+    .card-wrapper {
+      perspective: 1400px;
+      width: var(--card-width);
+      height: var(--card-height);
+    }
+
+    .card-3d {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform-origin: center center;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-strong);
+      cursor: pointer;
+      transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1),
+                  box-shadow 0.5s ease,
+                  filter 0.5s ease;
+      animation: floatCard 7s ease-in-out infinite;
+    }
+
+    .card-wrapper:hover .card-3d {
+      box-shadow: var(--shadow-soft);
+      filter: brightness(1.06);
+      animation-play-state: paused;
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      backface-visibility: hidden;
+    }
+
+    .card-face.front,
+    .card-face.back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-face.back {
+      transform: rotateY(180deg);
+    }
+
+    .card-3d.flipped {
+      transform: rotateY(180deg) rotateX(10deg) translateY(-8px);
+    }
+
+    /* Animación base de flotación + rotación ligera */
+    @keyframes floatCard {
+      0% {
+        transform: rotateY(-18deg) rotateX(14deg) translateY(0);
+      }
+      25% {
+        transform: rotateY(-10deg) rotateX(16deg) translateY(-10px);
+      }
+      50% {
+        transform: rotateY(0deg) rotateX(12deg) translateY(-4px);
+      }
+      75% {
+        transform: rotateY(10deg) rotateX(16deg) translateY(-10px);
+      }
+      100% {
+        transform: rotateY(18deg) rotateX(14deg) translateY(0);
+      }
+    }
+
+    /* Etiquetas inferiores */
+    .card-label {
+      margin-top: 0.6rem;
+      text-align: center;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      color: #aeb7e4;
+      text-transform: uppercase;
+    }
+
+    .card-label span {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Indicaciones */
+    .hint {
+      font-size: 0.8rem;
+      color: #9ca6d4;
+      text-align: center;
+      margin-top: -0.8rem;
+    }
+
+    /* Botones de acción */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.6rem;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.3rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .btn.secondary {
+      background: rgba(19, 28, 60, 0.9);
+      border: 1px solid rgba(115, 130, 190, 0.7);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+      filter: brightness(1.05);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Modo responsive */
+    @media (max-width: 480px) {
+      :root {
+        --card-width: 320px;
+        --card-height: 190px;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      .subtitle {
+        padding-inline: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tarjetas Digitales COLBOLTIC SRL</h1>
+  <p class="subtitle">
+    Haz clic o toca cada tarjeta para ver el anverso y reverso en una animación 3D flotante.
+  </p>
+
+  <p class="hint">Tip: si se detiene la animación, vuelve a pasar el mouse por encima 🤝</p>
+
+  <section class="cards-grid">
+    <!-- TARJETA YAMIL -->
+    <div class="card-wrapper" data-owner="yamil">
+      <div class="card-3d">
+        <div class="card-face front">
+          <!-- Imagen anverso Yamil -->
+          <img src="xliZY-2.jpg" alt="Tarjeta frontal Yamil F. Rivera" />
+        </div>
+        <div class="card-face back">
+          <!-- Imagen reverso Yamil -->
+          <img src="6n8DF-3.jpg" alt="Tarjeta reverso general Colboltic" />
+        </div>
+      </div>
+      <p class="card-label">
+        <span>Yamil F. Rivera O.</span> · Director de Tecnología
+      </p>
+    </div>
+
+    <!-- TARJETA DANA -->
+    <div class="card-wrapper" data-owner="dana">
+      <div class="card-3d">
+        <div class="card-face front">
+          <!-- Imagen anverso Dana -->
+          <img src="dana-avila.jpg" alt="Tarjeta frontal Dana M. Ávila" />
+        </div>
+        <div class="card-face back">
+          <!-- Puedes reutilizar el mismo reverso o poner otro archivo -->
+          <img src="6n8DF-3.jpg" alt="Tarjeta reverso general Colboltic" />
+        </div>
+      </div>
+      <p class="card-label">
+        <span>Dana M. Ávila P.</span> · Community Manager
+      </p>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn" id="toggle-rotation">
+      Pausar / Reanudar Animación 3D
+    </button>
+    <button class="btn secondary" id="reset-cards">
+      Resetear Posición de Tarjetas
+    </button>
+  </div>
+
+  <script>
+    // Obtener todas las tarjetas
+    const cardWrappers = document.querySelectorAll(".card-wrapper");
+    const toggleBtn = document.getElementById("toggle-rotation");
+    const resetBtn = document.getElementById("reset-cards");
+    let rotationPaused = false;
+
+    cardWrappers.forEach((wrapper) => {
+      const card = wrapper.querySelector(".card-3d");
+
+      // Click / toque para voltear
+      wrapper.addEventListener("click", () => {
+        card.classList.toggle("flipped");
+      });
+
+      // Efecto "tilt" suave según el mouse
+      wrapper.addEventListener("mousemove", (e) => {
+        const rect = wrapper.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateY = ((x - centerX) / centerX) * 10;
+        const rotateX = -((y - centerY) / centerY) * 10;
+
+        card.style.animationPlayState = "paused";
+        card.style.transform =
+          `rotateY(${rotateY}deg) rotateX(${rotateX}deg)` +
+          (card.classList.contains("flipped") ? " rotateY(180deg)" : "");
+      });
+
+      wrapper.addEventListener("mouseleave", () => {
+        card.style.animationPlayState = rotationPaused ? "paused" : "running";
+        card.style.transform = "";
+      });
+    });
+
+    // Botón para pausar / reanudar animación base
+    toggleBtn.addEventListener("click", () => {
+      rotationPaused = !rotationPaused;
+      document.querySelectorAll(".card-3d").forEach((card) => {
+        card.style.animationPlayState = rotationPaused ? "paused" : "running";
+      });
+    });
+
+    // Resetear a estado inicial
+    resetBtn.addEventListener("click", () => {
+      rotationPaused = false;
+      document.querySelectorAll(".card-3d").forEach((card) => {
+        card.classList.remove("flipped");
+        card.style.animationPlayState = "running";
+        card.style.transform = "";
+      });
+    });
+  </script>
+</body>
+</html>
